@@ -2,7 +2,6 @@ const bodyEl = document.querySelector('body');
 const buttons = document.querySelectorAll('button');
 const startEl = document.querySelector('button[data-start]');
 const stopEl = document.querySelector('button[data-stop]');
-stopEl.disabled = true;
 let intervalID = null;
 
 function getRandomHexColor() {
@@ -11,11 +10,21 @@ function getRandomHexColor() {
     .padStart(6, 0)}`;
 }
 
+document.addEventListener('DOMContentLoaded', () =>{
+  stopEl.disabled = true;
+  stopEl.style.backgroundColor = 'gray';
+  stopEl.style.color = 'red';
+})
+
 const startTimer = () => {
   intervalID = setInterval(() => {
     bodyEl.style.backgroundColor = getRandomHexColor();
     stopEl.disabled = false;
+    stopEl.style.backgroundColor = buttonStyles.backgroundColor;
+    stopEl.style.color = buttonStyles.color;
     startEl.disabled = true;
+    startEl.style.backgroundColor = 'gray';
+    startEl.style.color = 'red';
   }, 1000);
 };
 
@@ -25,20 +34,23 @@ const stopTimer = () => {
   clearInterval(intervalID);
   startEl.style.pointerEvents = '';
   startEl.disabled = false;
+  startEl.style.backgroundColor = buttonStyles.backgroundColor;
+  startEl.style.color = buttonStyles.color;
   stopEl.disabled = true;
+  stopEl.style.backgroundColor = 'gray';
+  stopEl.style.color = 'red';
 };
 
 stopEl.addEventListener('click', stopTimer);
 
-
-const buttonStyles = `
-  border: none;
-  border-radius: 20px;
-  background-color: rgb(25 223 20);
-  color: rgb(16 83 229);
-  padding: 10px 40px;
-  font-size: 18px;
-`;
+const buttonStyles = {
+  border: "none",
+  borderRadius: "20px",
+  backgroundColor: 'rgb(25 223 20)',
+  color: 'rgb(16 83 229)',
+  padding: '10px 40px',
+  fontSize: '18px',
+};
 
 const buttonFocusStyles = `
   background-color: rgb(170, 85, 250);
@@ -46,13 +58,17 @@ const buttonFocusStyles = `
 `;
 
 buttons.forEach((button) => {
-  button.style.cssText = buttonStyles;
+  for (const style in buttonStyles) {
+    button.style[style] = buttonStyles[style];
+  }
 
   button.addEventListener('focus', () => {
     button.style.cssText += buttonFocusStyles;
   });
 
   button.addEventListener('blur', () => {
-    button.style.cssText = buttonStyles;
+    for (const style in buttonStyles) {
+      button.style[style] = buttonStyles[style];
+    }
   });
 });
